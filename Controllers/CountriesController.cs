@@ -1,9 +1,6 @@
 ﻿using KAHA.TravelBot.NETCoreReactApp.Models;
 using KAHA.TravelBot.NETCoreReactApp.Services;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace KAHA.TravelBot.NETCoreReactApp.Controllers
 {
@@ -18,28 +15,28 @@ namespace KAHA.TravelBot.NETCoreReactApp.Controllers
             this.travelBotService = travelBotService;
         }
 
-        // GET: api/<CountriesController>
+        // GET: api/countries/all
         [HttpGet("all")]
         public async Task<IEnumerable<CountryModel>> all()
         {
             return await travelBotService.GetAllCountries();
         }
 
-        // GET: api/<CountriesController>
+        // GET: api/countries/top5
         [HttpGet("top5")]
         public async Task<IEnumerable<CountryModel>> GetTopFive()
         {
             return await travelBotService.GetTopFiveCountries();
         }
 
-        // GET api/<CountriesController>/summary/Zimbabwe
-        [HttpGet("summary/{countryName}")]
+        // GET api/countries/South Africa
+        [HttpGet("{countryName}")]
         public async Task<CountrySummaryModel> GetSummary(string countryName)
         {
             return await travelBotService.GetCountrySummary(countryName);
         }
 
-        // POST api/<CountriesController>
+        // POST api/countries/random
         [HttpGet("random")]
         public async Task<CountrySummaryModel> GetRandomCountry()
         {

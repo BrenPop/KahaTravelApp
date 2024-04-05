@@ -95,7 +95,7 @@ namespace KAHA.TravelBot.NETCoreReactApp.Services
         {
             try
             {
-                var apiUrl = $"{SunriseSunsetApiUrl}?lat={country.Latitude}&lng={country.Longitude}";
+                var apiUrl = $"{SunriseSunsetApiUrl}?lat={country.Latitude}&lng={country.Longitude}&date=today&tzid=Africa/Johannesburg";
                 var response = await _httpClient.GetAsync(apiUrl);
                 response.EnsureSuccessStatusCode();
                 var sunsetSunriseApiResponse = JsonConvert.DeserializeObject<SunsetSunriseApiResponse>(await response.Content.ReadAsStringAsync());
@@ -146,7 +146,8 @@ namespace KAHA.TravelBot.NETCoreReactApp.Services
                 Capital = token["capital"]?[0]?.ToString(),
                 Population = token["population"]?.ToObject<int>() ?? 0,
                 Latitude = token["capitalInfo"]?["latlng"]?[0]?.ToObject<float>() ?? 0f,
-                Longitude = token["capitalInfo"]?["latlng"]?[1]?.ToObject<float>() ?? 0f
+                Longitude = token["capitalInfo"]?["latlng"]?[1]?.ToObject<float>() ?? 0f,
+                TimeZone = token["timezones"]?[0]?.ToString() ?? "Africa/Johannesburg"
             };
         }
 
