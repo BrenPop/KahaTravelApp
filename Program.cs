@@ -1,13 +1,16 @@
 using KAHA.TravelBot.NETCoreReactApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
 
-// Register the WeatherForecastService as a scoped service.
-builder.Services.AddScoped<IWeatherForecastService, WeatherForecastService>();
+builder.Services.AddScoped<ITravelBotService, TravelBotService>();
+builder.Services.AddScoped<HttpClient>();
 
 var app = builder.Build();
 
