@@ -1,4 +1,5 @@
 ﻿using KAHA.TravelBot.NETCoreReactApp.Models;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -8,6 +9,7 @@ namespace KAHA.TravelBot.NETCoreReactApp.Services
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<TravelBotService> _logger;
+        private readonly IMemoryCache _memoryCache;
 
         private const string CountriesApiUrl = "https://restcountries.com/v3.1";
         private const string SunriseSunsetApiUrl = "https://api.sunrise-sunset.org/json";
@@ -15,25 +17,28 @@ namespace KAHA.TravelBot.NETCoreReactApp.Services
         public List<CountryModel> Countries { get; set; }
         private static DateTime CacheExpiration;
 
-        public TravelBotService(HttpClient httpClient, ILogger<TravelBotService> logger)
+        public TravelBotService(HttpClient httpClient, ILogger<TravelBotService> logger, IMemoryCache memoryCache)
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _memoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
         }
 
         public async Task<IEnumerable<CountryModel>> GetAllCountries()
         {
             try
             {
-                if (Countries == null || DateTime.Now > CacheExpiration)
+                var cacheKey = $"all_countries_" + DateTime.Today.ToString("yyyy-MM-dd");
+
+                if (!_memoryCache.TryGetValue(cacheKey, out IEnumerable<CountryModel> countries))
                 {
                     var response = await _httpClient.GetStringAsync($"{CountriesApiUrl}/all");
                     var parsedResponse = JArray.Parse(response);
-                    Countries = parsedResponse.Select(c => ParseCountryModel(c)).ToList();
-                    CacheExpiration = DateTime.Now.AddDays(1); // Cache for 24 hours
+                    countries = parsedResponse.Select(c => ParseCountryModel(c)).ToList();
+                    _memoryCache.Set(cacheKey, countries);
                 }
 
-                return Countries;
+                return countries;
             }
             catch (Exception ex)
             {

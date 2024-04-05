@@ -1,4 +1,5 @@
 ﻿using KAHA.TravelBot.NETCoreReactApp.Services;
+using Microsoft.Extensions.Caching.Memory;
 using NUnit.Framework;
 
 namespace KAHA.TravelBot.NETCoreReactApp.Tests
@@ -8,14 +9,16 @@ namespace KAHA.TravelBot.NETCoreReactApp.Tests
         TravelBotService travelBotService;
         HttpClient httpClient;
         ILogger<TravelBotService> ILogger;
+        IMemoryCache IMemoryCache;
 
         [SetUp]
         public void Setup()
         {
             httpClient = new HttpClient();
             ILogger = new LoggerFactory().CreateLogger<TravelBotService>();
+            IMemoryCache = new MemoryCache(new MemoryCacheOptions());
 
-            travelBotService = new TravelBotService(httpClient, ILogger);
+            travelBotService = new TravelBotService(httpClient, ILogger, IMemoryCache);
         }
 
         [Test]

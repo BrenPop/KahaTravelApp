@@ -11,6 +11,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ITravelBotService, TravelBotService>();
 builder.Services.AddScoped<HttpClient>();
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
